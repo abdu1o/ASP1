@@ -7,6 +7,7 @@ namespace ASP1.Controllers
         public IActionResult Index()
         {
             ViewBag.CurrentDate = DateTime.Now;
+
             return View();
         }
     }
