@@ -15,4 +15,6 @@ public class Product
     [Required(ErrorMessage = "Necessary")]
     [Range(0, int.MaxValue, ErrorMessage = "Quantity coudn`t be negative")]
     public int StockQuantity { get; set; }
+
+    public string ImagePath { get; set; }
 }

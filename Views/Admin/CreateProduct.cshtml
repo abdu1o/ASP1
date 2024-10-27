@@ -1,6 +1,6 @@
 ﻿@model Product
 
-<h2>Додати товар</h2>
+<h2>Add product</h2>
 
 <form asp-action="CreateProduct" method="post">
     <div class="form-group">
@@ -28,7 +28,12 @@
         <span asp-validation-for="StockQuantity" class="text-danger"></span>
     </div>
 
-    <button type="submit" class="btn btn-primary">Додати товар</button>
+    <div class="form-group">
+        <label>Upload Image</label>
+        <input type="file" name="imageFile" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Add product</button>
 </form>
 
 @if (ViewBag.Message != null)
@@ -37,9 +42,14 @@
 }
 else if (ViewBag.Product != null)
 {
-    <h3>Передані дані:</h3>
+    <h3>Uploaded data:</h3>
     <p><strong>Name:</strong> @ViewBag.Product.Name</p>
     <p><strong>Description:</strong> @ViewBag.Product.Description</p>
     <p><strong>Price:</strong> @ViewBag.Product.Price</p>
     <p><strong>Quantity:</strong> @ViewBag.Product.StockQuantity</p>
+    @if (ViewBag.Product.ImagePath != null)
+    {
+        <p><strong>Image:</strong></p>
+        <img src="@ViewBag.Product.ImagePath" alt="Product image" style="max-width: 200px; height: auto;" />
+    }
 }

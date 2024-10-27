@@ -12,7 +12,7 @@ namespace ASP1.Controllers
             var product = HttpContext.Session.Get<Product>("Product");
             if (product == null)
             {
-                ViewBag.Message = "Немає попередніх даних";
+                ViewBag.Message = "No previous data";
             }
             else
             {
@@ -22,10 +22,28 @@ namespace ASP1.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateProduct(Product product)
+        public IActionResult CreateProduct(Product product, IFormFile imageFile)
         {
             if (ModelState.IsValid)
             {
+                if (imageFile != null && imageFile.Length > 0)
+                {
+                    var uploads = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images");
+                    var filePath = Path.Combine(uploads, imageFile.FileName);
+
+                    if (!Directory.Exists(uploads))
+                    {
+                        Directory.CreateDirectory(uploads);
+                    }
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        imageFile.CopyTo(stream);
+                    }
+
+                    product.ImagePath = $"/images/{imageFile.FileName}";
+                }
+
                 HttpContext.Session.Set("Product", product); 
                 return RedirectToAction("CreateProduct"); 
             }
