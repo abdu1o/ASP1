@@ -10,24 +10,14 @@ using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllersWithViews();
 
-// Місце для реєстрації служб між створенням builder та його використанням (app)
-// Реєстрація - співставлення інтерфейсу з класом за формулою
-// "Буде запит на IHashService - видати об'єкт класу Md5HashService"
-
-//builder.Services.AddSingleton<IHashService, Md5HashService>();
 builder.Services.AddSingleton<IHashService, ShaHashService>();
 builder.Services.AddSingleton<IKdfService, Pbkdf1Service>();
 builder.Services.AddSingleton<IFileUploader, FileUploadService>();
 
-// Homework 2
-//builder.Services.AddSingleton<IOtpService, Otp6Service>();
 builder.Services.AddSingleton<IOtpService, Otp4Service>();
 
-// Homework 3
-// Було використано Transient, щоб при кожному запиті генерувались різні імена
 builder.Services.AddTransient<IFileNameService, FileNameService>();
 
 builder.Services.AddDistributedMemoryCache();
@@ -38,12 +28,10 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-// Реєструємо контекст даних
 builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("LocalDb")));
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -56,7 +44,6 @@ app.UseRouting();
 app.UseAuthorization();
 app.UseSession();
 
-// Наші Middleware
 app.UseSessionAuth();
 
 app.MapControllerRoute(
