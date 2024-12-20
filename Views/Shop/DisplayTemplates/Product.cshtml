@@ -1,0 +1,54 @@
+﻿@using System.Security.Claims
+
+@model ASP.NET_Classwork.Data.Entities.Product
+
+@{
+    int feedbacksAmount = Model.Feedbacks.Count();
+    int avgFeedback = 0;
+    int sum = 0;
+    int amount = 0;
+
+    foreach (var feedback in Model.Feedbacks)
+    {
+        sum += feedback.Rate;
+        amount++;
+    }
+
+    if (amount == 0) avgFeedback = 0;
+    else avgFeedback = sum / amount;
+
+    String? userId = Context.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Sid)?.Value;
+}
+
+<div class="item-product-card">
+    <a asp-action="Product" asp-route-id="@(Model.Slug ?? Model.Id.ToString())" class="a-no-underline">
+        <div class="product-img-container">
+            <img src="/Home/Download/Shop_@(Model.Picture)" alt="Picture" />
+        </div>
+        <div class="product-info-container">
+            <h2>
+                @Model.Name
+            </h2>
+            <p>
+                @Model.Description
+            </p>
+            <h5>
+                @for (int i = 0; i < avgFeedback; ++i)
+                {
+                    <span class="bi bi-star-fill" style="color: gold;"></span>
+                }
+                @for (int i = 0; i < 5 - avgFeedback; ++i)
+                {
+                    <span class="bi bi-star" style="color: gold;"></span>
+                }
+            </h5>
+            <h3>
+                ₴ @Model.Price
+            </h3>
+            <h6>
+                <i>кількість коментарів: @feedbacksAmount</i>
+            </h6>
+        </div>
+    </a>
+    <button class="btn btn-outline-success" data-product-id="@Model.Id" data-user-id="@userId" data-role="add-to-cart"><i class="bi bi-cart3"></i> До кошику</button>
+</div>
